@@ -1,62 +1,67 @@
 <!-- Formulario de inicio de sesión -->
 <script setup lang="ts">
-import{ reactive} from 'vue';
-import { User} from '@/models/UserModel'
-import { useUserStore } from '@/stores/userStore';
+//import{ reactive} from 'vue';
+//import type { User } from '@/models/UserModel';
+
+//importaciones locales 
+import { UserStore } from '@/stores/userStore';
+
 import { useRouter } from 'vue-router';
+
+//importaciones de libreria
+import { Form, Field} from 'vee-validate';
+import * as Yup from 'yup';
 
 
 // Variables reactivas para los campos del formulario
-const uStore = useUserStore()
-const use: User = reactive<User>({
-  username: '',
-  password: '',
-  rememberMe: false
+const uStore = UserStore();
+const authStore = useAuthStore();
+const router = useRouter();
+
+const schema = Yup.object().shape({
+  userName: Yup.string().required('Usuario Requerido'),
+  password: Yup.string().required('Password es Requerido'),
 })
 
-const router = useRouter();
-function onSubmit(){
-  uStore.setUser (user)
-  router.push ('home')
-}
-//const user = ref(''); // Nombre de usuario
-//const password = ref(''); // Contraseña
-//const remember = ref(false); // Estado de "Recordarme"
+if
+function handleSumbit(){
+  //uStore.setUser (user)
+  router.push ('/home');
+};
 
-// Función que se ejecuta al enviar el formulario
-//const submitForm = () => {
-  // Guarda los datos de usuario en el store
- // userStore.setUser({ user: user.value, password: password.value, remember: remember.value });
-  //console.log(userStore.getUser); // Muestra los datos almacenados en la consola
- // router.push({ name: 'Home' }); // Redirige a la página Home después de iniciar sesión
-//};
 </script>
 <template>
     <!-- Evento submit que ejecuta la función 'submitForm' sin refrescar la página -->
-    <form @submit.prevent="onSubmit" id= "loginForm">
+    <Form @submit.prevent="handleSumbit" :validation-schema="schema" v-slot="{errors, isSubmitting}" >
       <h1>Login</h1>
 
       <!-- Campo de entrada para el nombre de usuario -->
       <div class="input-bx">
-        <input v-model="user.username"  name= "user"type="text" placeholder="Usuario" required />
+        <Field name= "userName" type="text" :class="{'is-invalid': errors.userName || errors.apiError }" placeholder="Usuario" required />
         <ion-icon class="icon" name="person-circle"></ion-icon>
+        <div class="invalid-feedback">{{ errors.userName}}</div>
       </div>
 
       <!-- Campo de entrada para la contraseña -->
       <div class="input-bx">
-        <input v-model="user.password" name= 'password'type="password" placeholder="Contraseña" required />
+        <Field name= 'password'type="password" :class="{'is-invalid': errors.password || errors.apiError }" placeholder="Contraseña" required />
         <ion-icon class="icon" name="lock-closed"></ion-icon>
+        <div class="invalid-feedback">{{ errors.password}}</div>
       </div>
 
       <!-- Sección para la opción de "Recordarme" y enlace para contraseña olvidada -->
       <div class="remember-forgot">
-        <label><input v-model="user.rememberMe" name = 'remember' type="checkbox" /> Recordarme</label>
+        <label><input name = 'remember' type="checkbox" /> Recordarme</label>
         <a href="#">Olvidaste tu contraseña</a>
       </div>
 
       <!-- Botón para enviar el formulario -->
-      <button type="submit" class="btn">Ingresar</button>
-    </form>
+      <button type="submit" class="btn">
+        <span v-show="isSubmitting" class="loader"></span> 
+        <p v-show="!isSubmitting">Ingresar</p>
+        </button>
+     
+    </Form>
 </template>
 
 <style scoped>

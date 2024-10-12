@@ -1,3 +1,21 @@
+<script setup lang="ts">
+import { UserStore } from '../stores/userStore'; // Importa el store 'userStore'
+import { useRouter } from 'vue-router'; // Importa el router para redirección
+
+const store= UserStore();
+const user = store.user;
+const router = useRouter(); // Crea una instancia del router
+const userStore = UserStore(); // Crea una instancia del store
+const userData = userStore.getUser; // Obtiene los datos del usuario
+
+// Función para cerrar sesión
+const logout = () => {
+  userStore.$reset(); // Resetea los datos del usuario en el store
+  router.push({ name: 'Login' }); // Redirige a la página de inicio de sesión
+};
+</script>
+
+
 <!-- Vista para mostrar los datos del usuario -->
 <template>
   <div class="container">
@@ -12,21 +30,6 @@
     <button class="logout-btn" @click="logout">Cerrar sesión</button>
   </div>
 </template>
-
-<script setup lang="ts">
-import { useUserStore } from '../stores/userStore'; // Importa el store 'userStore'
-import { useRouter } from 'vue-router'; // Importa el router para redirección
-
-const router = useRouter(); // Crea una instancia del router
-const userStore = useUserStore(); // Crea una instancia del store
-const userData = userStore.getUser; // Obtiene los datos del usuario
-
-// Función para cerrar sesión
-const logout = () => {
-  userStore.$reset(); // Resetea los datos del usuario en el store
-  router.push({ name: 'Login' }); // Redirige a la página de inicio de sesión
-};
-</script>
 
 <style scoped>
   h1 {

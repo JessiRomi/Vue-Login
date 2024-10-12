@@ -1,13 +1,8 @@
 import { defineStore } from 'pinia'; // Importa la librería de Pinia
+import type { User } from '@/models/UserModel';
 
-// Definir la interfaz de usuario
-interface User {
-  user: string;
-  password: string;
-  remember: boolean;
-}
  // Crea el store
-export const useUserStore = defineStore('user', {
+export const UserStore = defineStore('user', {
   state: () => ({
     userData: {} as User, // Inicializa la variable de usuario
   }),

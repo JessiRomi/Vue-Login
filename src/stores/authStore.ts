@@ -1,17 +1,17 @@
 import { defineStore } from "pinia";
 import {fetchWrapper} from "@/helpers/fetchWrapper";
-import { User} from "@/models/UserModel";
+import type { User} from "@/models/UserModel";
 import router from "@/router";
 
-const baseUrl =`${import.meta.env.VITE_API_VERSION}/users`   
+const baseUrl =`${import.meta.env.VITE_API_URL}/users`   
 export const useAuthStore = defineStore({
         id:"auth",
         state: ()=> ({
             auth:{} as { loading: boolean, data?: User | null, resfreshTokenTimeout: number | null} 
     }),
     actions: {
-        async login (username: string, password: string){
-            this.auth.data = await fetchWrapper.post(`${baseUrl}/authenticate`,{username, password},{ credentials: 'include'});
+        async login (userName: string, password: string){
+            this.auth.data = await fetchWrapper.post(`${baseUrl}/authenticate`,{userName, password},{ credentials: 'include'});
             this.startRefreshTokenTimer();
         },
         logout(){

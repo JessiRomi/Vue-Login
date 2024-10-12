@@ -3,9 +3,9 @@ export interface User {
   id: number,
   firstName: string,
   lastName: string,  
-  username: string;
+  userName: string;
   password: string;
-  rememberMe?: boolean,
+  remember?: boolean,
   isAdmin: boolean,
   jwtToken?: string,
   refreshTokens: string[]
