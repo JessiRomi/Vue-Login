@@ -14,7 +14,7 @@ const user: User = {
     id: 1, 
     firstName: 'Jessica', 
     lastName: 'Conejero', 
-    userName: 'test', 
+    username: 'test', 
     password: 'test',
     isAdmin: true, 
     refreshTokens: [] 
@@ -59,8 +59,8 @@ function fakeBackend() {
             // Funciones de rutas
 
             function authenticate() {
-                const { userName, password } = body<AuthRequestBody>();
-                const user = users.find(x => x.userName === userName && x.password === password);
+                const { username, password } = body<AuthRequestBody>();
+                const user = users.find(x => x.username === username && x.password === password);
 
                 if (!user) return error('Usuario o contraseña incorrectos');
 
@@ -70,7 +70,7 @@ function fakeBackend() {
 
                 return ok({
                     id: user.id,
-                    userName: user.userName,
+                    username: user.username,
                     firstName: user.firstName,
                     lastName: user.lastName,
                     isAdmin: user.isAdmin,
@@ -92,7 +92,7 @@ function fakeBackend() {
 
                 return ok({
                     id: user.id,
-                    userName: user.userName,
+                    username: user.username,
                     firstName: user.firstName,
                     lastName: user.lastName,
                     isAdmin: user.isAdmin,

@@ -1,11 +1,9 @@
 <!-- Formulario de inicio de sesión -->
 <script setup lang="ts">
-//import{ reactive} from 'vue';
-//import type { User } from '@/models/UserModel';
 
 //importaciones locales 
 import { UserStore } from '@/stores/userStore';
-
+import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'vue-router';
 
 //importaciones de libreria
@@ -19,27 +17,34 @@ const authStore = useAuthStore();
 const router = useRouter();
 
 const schema = Yup.object().shape({
-  userName: Yup.string().required('Usuario Requerido'),
+  username: Yup.string().required('Usuario Requerido'),
   password: Yup.string().required('Password es Requerido'),
 })
 
-if
-function handleSumbit(){
-  //uStore.setUser (user)
-  router.push ('/home');
+if(authStore.auth.data){
+  router.push ('/')
+}
+async function handleSumbit(values: any, {setErrors}:any){
+  const { username: username, password} = values;
+  try {
+    await authStore.login(username, password);
+    router.push('/');
+  } catch (error) {
+    setErrors({ apiError: error });
+  }
 };
 
 </script>
 <template>
     <!-- Evento submit que ejecuta la función 'submitForm' sin refrescar la página -->
-    <Form @submit.prevent="handleSumbit" :validation-schema="schema" v-slot="{errors, isSubmitting}" >
+    <Form @submit="handleSumbit" :validation-schema="schema" v-slot="{errors, isSubmitting}" class="wrapper">
       <h1>Login</h1>
 
       <!-- Campo de entrada para el nombre de usuario -->
       <div class="input-bx">
-        <Field name= "userName" type="text" :class="{'is-invalid': errors.userName || errors.apiError }" placeholder="Usuario" required />
+        <Field name= "username" type="text" :class="{'is-invalid': errors.username || errors.apiError }" placeholder="Usuario" required />
         <ion-icon class="icon" name="person-circle"></ion-icon>
-        <div class="invalid-feedback">{{ errors.userName}}</div>
+        <div class="invalid-feedback">{{ errors.username}}</div>
       </div>
 
       <!-- Campo de entrada para la contraseña -->
@@ -60,7 +65,7 @@ function handleSumbit(){
         <span v-show="isSubmitting" class="loader"></span> 
         <p v-show="!isSubmitting">Ingresar</p>
         </button>
-     
+        <div v-if= "errors.apiError" class="error-alert">{{ errors.apiError }}</div>
     </Form>
 </template>
 
@@ -178,6 +183,14 @@ body {
   font-size: 1.2em;
   font-weight: 600;
   color: #333; /* Color del texto del botón */
+}
+.error-alert{
+  margin: 16px 0 0 0;
+  width: 100%;
+  background: transparent;
+  color:#ffffff;
+  text-align: center;
+  font-weight: 400;
 }
 </style>
 

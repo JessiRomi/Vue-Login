@@ -18,7 +18,7 @@ export const useAuthStore = defineStore({
             fetchWrapper.post (`${baseUrl}/revoke-token`,{},{ credentials: 'include'});
             this.startRefreshTokenTimer();
             this.auth.data = null;
-            router.push({ name: '/login' });
+            router.push({ name: '/' });
         },
         async resfreshToken(){
             this.auth.data = await fetchWrapper.post(`${baseUrl}/refresh-token`,{}, { credentials: 'include'});

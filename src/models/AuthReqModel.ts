@@ -1,4 +1,4 @@
 export interface AuthRequestBody {
-    userName: string;
+    username: string;
     password: string;
 }
