@@ -70,28 +70,6 @@ async function handleSumbit(values: any, {setErrors}:any){
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&family=Saira:ital,wght@0,100..900;1,100..900&display=swap');
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Saira", sans-serif;
-  font-size: 16px;
-}
-
-body {
-  /* Centra el contenido en el medio de la pantalla y aplica fondo */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: url('../assets/background.jpg') no-repeat;
-  background-size: cover;
-  background-position: center;
-  min-height: 100vh;
-  max-height: 100vh;
-  max-width: 100vw;
-}
 
 .wrapper {
   /* Estilos del contenedor del formulario */
