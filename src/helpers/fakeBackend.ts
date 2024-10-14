@@ -60,7 +60,8 @@ function fakeBackend() {
 
             function authenticate() {
                 const { username, password } = body<AuthRequestBody>();
-                const user = users.find(x => x.username === username && x.password === password);
+                let userss = JSON.parse(localStorage.getItem(usersKey)!);
+                const user = userss.find((x: { username: string; password: string; }) => x.username === username && x.password === password);
 
                 if (!user) return error('Usuario o contraseña incorrectos');
 

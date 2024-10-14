@@ -6,7 +6,7 @@ export const useSesionStore = defineStore('sesion', {
   state: (): SesionState => ({
     loading: false,
     data: {
-      tokenPayload: '',
+      tokenPayload: JSON.parse(localStorage.getItem("userLogued")!).jwtToken!.replace("fake-jwt-token.",""),
       createdAt: new Date(),
       refreshedAt: new Date(),
       expiresAt: new Date(),

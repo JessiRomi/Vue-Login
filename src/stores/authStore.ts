@@ -10,18 +10,19 @@ export const useAuthStore = defineStore({
             auth:{} as { loading: boolean, data?: User | null, resfreshTokenTimeout: number | null} 
     }),
     actions: {
-        async login (userName: string, password: string){
-            this.auth.data = await fetchWrapper.post(`${baseUrl}/authenticate`,{userName, password},{ credentials: 'include'});
+        async login (username: string, password: string){
+            this.auth.data = await fetchWrapper.post(`${baseUrl}/authenticate`,{username, password},{credentials: 'include'});
             this.startRefreshTokenTimer();
+            return this.auth.data
         },
         logout(){
-            fetchWrapper.post (`${baseUrl}/revoke-token`,{},{ credentials: 'include'});
+            fetchWrapper.post (`${baseUrl}/revoke-token`,{},{credentials: 'include'});
             this.startRefreshTokenTimer();
             this.auth.data = null;
-            router.push({ name: '/' });
+            router.push({ name: '/'});
         },
         async resfreshToken(){
-            this.auth.data = await fetchWrapper.post(`${baseUrl}/refresh-token`,{}, { credentials: 'include'});
+            this.auth.data = await fetchWrapper.post(`${baseUrl}/refresh-token`,{}, {credentials: 'include'});
             this.startRefreshTokenTimer();
         },
         startRefreshTokenTimer(){
@@ -31,6 +32,7 @@ export const useAuthStore = defineStore({
             const jwtBase64 = this.auth.data.jwtToken.split(".") [1];
             const decodedJwtToken = JSON.parse(atob(jwtBase64));
 
+            
             // crear un timeout para resfescar el token antes de que expire
             const expires = new Date(decodedJwtToken.exp * 1000)
             const timeout = expires.getTime()- Date.now() -(60*1000)

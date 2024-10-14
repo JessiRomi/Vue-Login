@@ -5,12 +5,12 @@ import HomeView from '../views/HomeView.vue'; // Importa el componente HomeView
 //Define las rutas
 const routes = [
   {
-    path: '/login',
+    path: '/',
     name: 'login',
     component: LoginPage, // Configura la nueva ruta 
   },
   {
-    path: '/',
+    path: '/home',
     name: 'home',
     component: HomeView, // Configura la nueva ruta
   },

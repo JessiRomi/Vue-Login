@@ -3,30 +3,21 @@
   import { useSesionStore } from '@/stores/sesionStore';
   import { UserStore } from '../stores/userStore'; // Importa el store 'userStore'
   import { useRouter } from 'vue-router'; // Importa el router para redirección
-  import { ref } from 'vue';
-  import { Form, Field } from 'vee-validate'; // Importa los componentes de vee-validate
   import * as yup from 'yup'; // Importa yup para la validación de formularios
   
   // Instancias del store y router
   const sesionStore = useSesionStore();
   const router = useRouter(); // Crea una instancia del router
   const userStore = UserStore(); // Crea una instancia del store
-  const showCreateUserForm = ref(false); // Para mostrar u ocultar el formulario
-  
+
   // Datos de sesión
   const sessionData = sesionStore.data;
-  
-  // Esquema de validación
-  const schema = yup.object({
-    username: yup.string().required('El nombre de usuario es requerido'),
-    password: yup.string().required('La contraseña es requerida').min(6, 'La contraseña debe tener al menos 6 caracteres'),
-  });
+  const userLogued = JSON.parse(localStorage.getItem("userLogued")!);
   
   // Función para crear un nuevo usuario
   const createUser = async () => {
     try {
-      await userStore.createUser(); // Llama a la acción del store para crear el usuario
-      showCreateUserForm.value = false; // Ocultar el formulario
+      userStore.createUser(); // Llama a la acción del store para crear el usuario
     } catch (error) {
       console.error('Error al crear el usuario:', error);
     }
@@ -35,50 +26,31 @@
   // Función para cerrar sesión
   const logout = () => {
     userStore.$reset(); // Resetea los datos del usuario en el store
-    router.push({ name: 'Login' }); // Redirige a la página de inicio de sesión
+    router.push({ name: 'login' }); // Redirige a la página de inicio de sesión
   };
   </script>
   
   <!-- Vista para mostrar los datos del usuario -->
   <template>
     <div class="container">
-      <h1>Bienvenidos</h1>
-      <p>Rol del usuario: {{ userStore.role === 'admin' ? 'Administrador' : 'Usuario' }}</p>
+      <h1>Hola {{ userLogued.firstName }}</h1>
+      <h2>Informacion de tu usuario</h2>
+      <p>Rol del usuario: {{ userLogued.isAdmin === true ? 'Administrador' : 'Usuario' }}</p>
+      <p>Nombre de usuario: {{ userLogued.username }}</p>
       <div class="session-info">
+        <h2>Información de sesión</h2>
         <p><strong>Token Payload:</strong> {{ sessionData.tokenPayload }}</p>
         <p><strong>Creado:</strong> {{ sessionData.createdAt.toLocaleString() }}</p>
         <p><strong>Expira:</strong> {{ sessionData.expiresAt.toLocaleString() }}</p>
         <p><strong>Se refrescará:</strong> {{ sessionData.refreshedAt.toLocaleString() }}</p>
       </div>
   
-      <div v-if="userStore.role === 'admin'" class="admin-controls">
+      <div v-if="userLogued.isAdmin" class="admin-controls">
         <h2>Usuarios</h2>
         <ul>
-          <li v-for="user in userStore.users" :key="user.id">{{ user.username }}</li>
+          <li v-for="user in userStore.users" :key="user.id">{{ user.username }}: {{ user.firstName }} {{ user.lastName }} {{ user.isAdmin === true ? "[Administrador]":"[Usuario]" }}</li>
         </ul>
-        <button @click="showCreateUserForm = true">Crear nuevo usuario</button>
-  
-        <!-- Formulario para crear un nuevo usuario -->
-        <div v-if="showCreateUserForm">
-          <h3>Crear Nuevo Usuario</h3>
-  
-          <!-- Formulario con vee-validate -->
-          <Form @submit="createUser" :validation-schema="schema" v-slot="{errors}" >
-            <!-- Campo para el nombre de usuario -->
-            <label for="username">Nombre de usuario:</label>
-            <Field name="username" v-model="userStore.newUser.username" @input="userStore.setNewUserField('username', $event.target.value)" />
-            <span class="error">{{ errors.username }}</span>
-  
-            <!-- Campo para la contraseña -->
-            <label for="password">Contraseña:</label>
-            <Field type="password" name="password" v-model="userStore.newUser.password" @input="userStore.setNewUserField('password', $event.target.value)" />
-            <span class="error">{{ errors.password }}</span>
-  
-            <!-- Botones para crear o cancelar -->
-            <button type="submit">Crear Usuario</button>
-            <button type="button" @click="showCreateUserForm = false">Cancelar</button>
-          </Form>
-        </div>
+        <button @click="createUser()">Crear nuevo usuario</button>
       </div>
   
       <!-- Botón para cerrar sesión -->

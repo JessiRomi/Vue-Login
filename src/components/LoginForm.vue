@@ -25,10 +25,11 @@ if(authStore.auth.data){
   router.push ('/')
 }
 async function handleSumbit(values: any, {setErrors}:any){
-  const { username: username, password} = values;
+  const { username, password} = values;
   try {
-    await authStore.login(username, password);
-    router.push('/');
+    const data = await authStore.login(username, password);
+    localStorage.setItem("userLogued",JSON.stringify(data));
+    router.push('/home');
   } catch (error) {
     setErrors({ apiError: error });
   }
